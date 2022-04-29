@@ -151,7 +151,7 @@ export const preview = () => {
   }, 500);
 };
 
-export const saveSchema = async () => {
+export const saveSchema = async (showMessage?: boolean) => {
   window.localStorage.setItem(
     'projectSchema',
     JSON.stringify(project.exportSchema())
@@ -161,7 +161,7 @@ export const saveSchema = async () => {
     'packages',
     JSON.stringify(packages)
   );
-  Message.success('成功保存到本地');
+  if(showMessage) {Message.success('成功保存到本地');}
 };
 
 export const resetSchema = async () => {

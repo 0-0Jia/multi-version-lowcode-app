@@ -1,0 +1,36 @@
+.lowcode-plugin-version-list {
+    border-top: 1px solid rgba(221, 221, 221, 0.5);
+    .version-card {
+        padding: 4px 10px;
+        border-bottom: 1px solid rgba(221, 221, 221, 0.5);
+        .version-info {
+            display: inline-block;
+            width: 330px;
+            p {
+                margin: 2px 0;
+            }
+            .version-name {
+                font-size: 16px;
+            }
+            .version-description {
+                font-size: 13px;
+            }
+            .version-createtime {
+                font-size: 12px;
+                color: rgb(175, 175, 175);
+            }
+        }
+        .version-btn-con {
+            display: inline-block;
+            button {
+                display: block;
+            }
+            .merge-btn:hover {
+                color: black;
+            }
+            .delete-btn:hover {
+                color: black;
+            }
+        }
+    }
+}

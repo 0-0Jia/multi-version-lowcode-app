@@ -32,6 +32,9 @@ import {
   preview,
 } from './utils';
 import assets from './assets.json'
+import VersionManagement from 'src/sample-plugins/versionManagement';
+import UserContainer from 'src/sample-plugins/userContainer';
+import saveVersionModal from 'src/sample-plugins/saveVersioModal';
 
 export default async function registerPlugins() {
   // 说明书插件
@@ -184,7 +187,7 @@ export default async function registerPlugins() {
             align: 'right',
           },
           content: (
-            <Button onClick={saveSchema}>
+            <Button onClick={() => saveSchema(true)}>
               保存到本地
             </Button>
           ),
@@ -204,7 +207,7 @@ export default async function registerPlugins() {
         });
         hotkey.bind('command+s', (e) => {
           e.preventDefault();
-          saveSchema();
+          saveSchema(true);
         });
       },
     };
@@ -265,6 +268,27 @@ export default async function registerPlugins() {
   customSetter.pluginName = 'customSetter';
   await plugins.register(customSetter);
 
+  // 保存版本
+  const saveVersion = (ctx: ILowCodePluginContext) => {
+    return {
+      name: 'saveVersion',
+      async init() {
+        const { skeleton } = ctx;
+        skeleton.add({
+          name: 'saveVersion',
+          area: 'topArea',
+          type: 'Widget',
+          props: {
+            align: 'right',
+          },
+          content: saveVersionModal,
+        });
+      },
+    };
+  };
+  saveVersion.pluginName = 'saveVersion';
+  await plugins.register(saveVersion);
+
   // 自定义插件：版本管理
   const versionManage = (ctx: ILowCodePluginContext) => {
     return {
@@ -280,15 +304,36 @@ export default async function registerPlugins() {
             description: '版本管理'
           },
           panelProps: {
-            width: '800px',
+            width: '375px',
             title: '版本管理',
             keepVisibleWhileDragging: true,
           },
-          content: (<div>版本管理</div>)
+          content: VersionManagement
         })
       },
     };
   }
   versionManage.pluginName = 'versionManage';
   await plugins.register(versionManage);
+
+  // 自定义插件：版本管理
+  const userPlugin = (ctx: ILowCodePluginContext) => {
+    return {
+      name: 'userPlugin',
+      async init() {
+        const { skeleton } = ctx;
+        skeleton.add({
+          name: 'userPlugin',
+          area: 'topArea',
+          type: 'Widget',
+          props: {
+            align: 'left',
+          },
+          content: UserContainer
+        })
+      },
+    };
+  }
+  userPlugin.pluginName = 'userPlugin';
+  await plugins.register(userPlugin);
 };
