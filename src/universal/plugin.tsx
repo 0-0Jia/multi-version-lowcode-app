@@ -304,7 +304,7 @@ export default async function registerPlugins() {
             description: '版本管理'
           },
           panelProps: {
-            width: '375px',
+            width: '600px',
             title: '版本管理',
             keepVisibleWhileDragging: true,
           },

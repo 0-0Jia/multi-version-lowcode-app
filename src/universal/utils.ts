@@ -1,6 +1,7 @@
 import { material, project } from '@alilc/lowcode-engine';
 import { filterPackages } from '@alilc/lowcode-plugin-inject'
 import { Message, Dialog } from '@alifd/next';
+import { addChangeStyle, addNewAddStyle } from 'src/sample-plugins/versionManagement';
 
 export const loadIncrementalAssets = () => {
   material?.onChangeAssets(() => {
@@ -145,16 +146,18 @@ export const loadIncrementalAssets = () => {
 };
 
 export const preview = () => {
-  saveSchema();
+  saveSchema(true, true);
   setTimeout(() => {
     window.open(`./preview.html${location.search}`);
   }, 500);
 };
 
-export const saveSchema = async (showMessage?: boolean) => {
+export const saveSchema = async (showMessage?: boolean, ifRemoveConflictStyle?: boolean) => {
+  const projectSchema = project.exportSchema();
+  const removeStyleChildren = ifRemoveConflictStyle ? { ...projectSchema, children: removeConflictStyle(projectSchema?.componentsTree[0]?.children)} : projectSchema;
   window.localStorage.setItem(
     'projectSchema',
-    JSON.stringify(project.exportSchema())
+    JSON.stringify(removeStyleChildren)
   );
   const packages = await filterPackages(material.getAssets().packages);
   window.localStorage.setItem(
@@ -295,4 +298,19 @@ function request(
         reject(err);
       });
   });
+}
+
+export const removeConflictStyle = (components?: any) => {
+  for(let i = 0; i < components?.length; i++) {
+      const item = components[i];
+      if(item['conflictStyle'] === 'true') {
+          components[i] = addNewAddStyle(item, false);
+          components[i] = addChangeStyle(item, false);
+      }
+      if(Array.isArray(item?.children)) {
+          removeConflictStyle(item?.children);
+      }
+  }
+  console.log(components, 'removecomps')
+  return components;
 }

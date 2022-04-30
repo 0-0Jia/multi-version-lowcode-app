@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import './index.less';
 import { PluginProps } from '@alilc/lowcode-types';
 import { Button, Dialog, Form, Input } from '@alifd/next';
 import { uniqueId } from '@alilc/lowcode-utils';
