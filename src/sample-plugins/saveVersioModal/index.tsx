@@ -4,7 +4,7 @@ import { Button, Dialog, Form, Input } from '@alifd/next';
 import { uniqueId } from '@alilc/lowcode-utils';
 import { project } from '@alilc/lowcode-engine';
 import { dateFormat } from 'src/utils';
-import { saveSchema } from 'src/universal/utils';
+import { getRemoveStyleSchema, saveSchema } from 'src/universal/utils';
 
 export interface IProps {
 
@@ -21,16 +21,18 @@ const saveVersionModal: React.FC<IProps & PluginProps> = (props): React.ReactEle
         saveSchema(false);
         const preVersionList = JSON.parse(window.localStorage.getItem('versionList')!) || [];
         const username = JSON.parse(window.localStorage.getItem('loginUser')!)?.username;
+        const removeStyleSchema = getRemoveStyleSchema(project.exportSchema());
         const curTime = new Date();
         preVersionList?.unshift({
           id: uniqueId(),
           username,
           ...formVal,
-          versionJson: project.exportSchema(),
+          versionJson: removeStyleSchema,
           operator: username,
           createTime: dateFormat("YYYY-mm-dd HH:MM:SS", curTime),
         })
         window.localStorage.setItem('versionList', JSON.stringify(preVersionList));
+        saveSchema(false, true);
         window.location.reload();
     }
 

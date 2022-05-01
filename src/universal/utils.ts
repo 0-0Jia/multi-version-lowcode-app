@@ -2,6 +2,7 @@ import { material, project } from '@alilc/lowcode-engine';
 import { filterPackages } from '@alilc/lowcode-plugin-inject'
 import { Message, Dialog } from '@alifd/next';
 import { addChangeStyle, addNewAddStyle } from 'src/sample-plugins/versionManagement';
+import { ProjectSchema } from '@alilc/lowcode-types';
 
 export const loadIncrementalAssets = () => {
   material?.onChangeAssets(() => {
@@ -152,12 +153,16 @@ export const preview = () => {
   }, 500);
 };
 
+export const getRemoveStyleSchema = (schema: ProjectSchema) => {
+  return { ...schema, children: removeConflictStyle(schema?.componentsTree[0]?.children)};
+}
+
 export const saveSchema = async (showMessage?: boolean, ifRemoveConflictStyle?: boolean) => {
   const projectSchema = project.exportSchema();
-  const removeStyleChildren = ifRemoveConflictStyle ? { ...projectSchema, children: removeConflictStyle(projectSchema?.componentsTree[0]?.children)} : projectSchema;
+  const removeStyleSchema = ifRemoveConflictStyle ? getRemoveStyleSchema(projectSchema) : projectSchema;
   window.localStorage.setItem(
     'projectSchema',
-    JSON.stringify(removeStyleChildren)
+    JSON.stringify(removeStyleSchema)
   );
   const packages = await filterPackages(material.getAssets().packages);
   window.localStorage.setItem(
